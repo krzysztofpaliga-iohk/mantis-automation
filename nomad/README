@@ -1,0 +1,91 @@
+1. Prerequisites
+	In order to be able to run nomad/docker based test network you need to have the following software installed:
+		- docker
+		- nomad
+
+2. Predefined node configurations. 
+	In the "mantis.hcl" file two node configurations have been defined:
+
+	- "miner-disabled"
+	- "miner-enabled"
+
+	For these node configurations mantis distributions directories are provided under:
+
+	./distributions/miner-disabled/
+	./distributions/miner-enabled/
+
+	In theese directories the content of the mantis client distribution directory has been placed and the configuration has been changed accordingly to the configurations name. For "miner-enabled" mining and metrics (for prometheus) had been enabled. 
+
+	!IMPORTANT! These custom node configurations are provided for the sake of testing the setup and can be reused or deleted after own custom node configurations have been defined. !IMPORTANT!
+
+3. Network configuration 
+	In order to start a test network, you either need to configure a new one, or decide which one to use (one of the mantis/conf/*.conf). This setup has been tested with the "sagano" network. The network name parameter is to be set in the config section of all the specific nodes configurations in the "./mantis.hcl" file:
+
+	group "miner-disabled" {
+		count = 1
+		/.../
+		config {
+		/.../
+			command = "/root/mantis-dist/bin/mantis-launcher"
+			args = [
+				"sagano"
+			]
+	/.../
+
+4. Node count
+	One can define how many instances of a custom node configuration are run by setting the appropriate "count" parameter in the "./mantis.hcl" file for a desired custom node configuration.
+
+5. Launching
+	- First, we create a dedicated docker network
+	
+			>	sudo docker network create --driver bridge nomad_mantis
+
+	- Then, we start the nomad agent
+
+			> sudo nomad agent -dev -config=nomad.conf
+ 
+  - Then, we start the configured nomad job file
+
+			> sudo nomad job plan mantis.hcl
+
+		and follow the on screen instructions.
+
+	- After that, we can visit the nomad UI under
+	
+			http://localhost:4646/ui
+
+		or inspect containers with docker
+
+			> sudo docker ps --no-trunc 
+
+6. Accessing services (RPC, Prometheus, Grafana, Faucet, Explorer)
+	One can access those services either through dockers internal network, like 
+	
+	for example 172.17.0.4:8546 
+	
+	or through localhost:<mapped_port>, 
+
+	where most of service ports are mapped. One can either use the combination of docker commands (docker ps, docker inspect) to find out the proper IPs and ports combinations or use nomad UI to access the mapped ports. For example "Grafana" can be accessed by clicking through:
+
+	Jobs > mantis > grafana > specific allocation > entry in the "Ports" section
+
+
+7. Defining custom node configuration
+	For various purposes (running/testing specific branch or changes in the mantis network configuration files) new node configurations can be defined. To accomplish it, the following needs to be done:
+
+		> mkdir ./distributions/<new-configuration>
+
+		- add "host_volume <new-configration>" entry to ./nomad.conf file analogous to other
+		- add "group <new-configuration>" entry to ./mantis.hcl file analogous to other	
+
+	For that node to be included in grafana, metrics need to be enabled in the network configuration file and the "metrics" service needs to be enabled for service discovery (consul) in the "./mantis.conf" file, analogous as for the "miner-enabled" node configuration.
+
+8. Faucet can not be defined in general, for all configurations to be valid. The "keystore" path is:
+
+		./provisioning/faucet/keystore/
+
+	If you need faucet to work, please fill that directory accordingly.
+
+9. Persistence will be added later. For now -> no persistence!.
+
+

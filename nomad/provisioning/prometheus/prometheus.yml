@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 15s
+  evaluation_interval: 30s
+#scrape_configs:
+#  - job_name: node
+#    honor_timestamps: true
+#    metrics_path: /metrics
+#    scheme: http
+#    static_configs:
+#    - targets: [ {{{nodesConfigContext }}} ]
+#      labels:
+#        alias: mantis-node
+scrape_configs:
+- job_name: "node"
+  honor_timestamps: true
+  metrics_path: /metrics
+
+  consul_sd_configs:
+  - server: "x230:8500"
+    datacenter: "dc1"
+    services: ["metrics"]

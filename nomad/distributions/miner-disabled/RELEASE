@@ -1,0 +1,36 @@
+Introduction
+
+This is the Mantis 2.0 release. This release was focused on improving general performance of the client and adding full Ethereum
+support.
+
+For a more detailed description of the functionality and configuration options see https://github.com/input-output-hk/mantis/wiki
+
+Known Issues
+
+EC-254 Full discovery 'kademlia' protocol not implemented. There are no known implications.
+
+EC-284 - Missing MPT Node while doing regular sync
+
+Workaround is to set the redownload-missing-state-nodes flag as per the documentation (see wiki).
+
+EC-371 - Occasional OOM error
+
+Workaround is to restart.
+
+EC-372 - Occasionally the synchronisation stops
+
+Workaround is to restart.
+
+Changes Since Last Release:
+
+- Full Ethereum support including Byzantium and Constantinople hard forks
+
+- Multiple performance improvements required to support Ethereum network
+
+Feedback
+
+Feedback gratefully received through the Ethereum Classic Forum (https://forum.ethereumclassic.org/)
+
+
+
+
