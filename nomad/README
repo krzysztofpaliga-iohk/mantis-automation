@@ -3,6 +3,22 @@
 		- docker
 		- nomad
 
+	Since nomad is using absolute paths, and local hostname is used in the configuration, the following needs to be changed:
+
+		Absolute paths accordingly to your local setup in:
+
+			./nomad.conf
+
+		Your local hostname for "x230" (my local hostname):
+	
+			in file "./mantis.hcl":
+
+				CONSUL_HOST="<local hostname>"
+
+			in file "./provisioning/prometheus/prometheus.yml":
+
+				- server: "<local hostname>:8500"				
+			
 2. Predefined node configurations. 
 	In the "mantis.hcl" file two node configurations have been defined:
 
